@@ -1,0 +1,16 @@
+# Core LLM dependencies
+openai>=1.0.0
+anthropic>=0.20.0
+
+# HTTP client (used by llm_client.py for direct API calls)
+aiohttp>=3.8.0
+
+# Data handling
+numpy>=1.24.0
+pydantic>=2.0.0
+pyyaml>=6.0
+
+# Progress bars and async testing
+tqdm>=4.65.0
+pytest>=7.4.0
+pytest-asyncio>=0.21.0

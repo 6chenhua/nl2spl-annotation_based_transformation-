@@ -1,0 +1,80 @@
+# Annotated NL2SPL Pipeline 配置文件
+
+pipeline:
+  name: "annotated_nl2spl"
+  version: "0.1.0"
+
+# 阶段配置
+phases:
+  annotation:
+    parallel: true
+    max_workers: 10
+    
+  conflict_resolution:
+    similarity_threshold: 0.85
+    overlap_threshold: 0.5
+    clustering:
+      algorithm: "dbscan"
+      eps: 0.3
+      min_samples: 1
+      
+  clarification:
+    enabled: true
+    ui_type: "console"  # console / web / api
+    max_questions: 10
+    
+  generation:
+    parallel: true
+    max_workers: 10
+
+# SPL块配置
+blocks:
+  - name: "persona"
+    enabled: true
+    required: true
+    description: "AI的角色定位和性格特征"
+    
+  - name: "audience"
+    enabled: true
+    required: false
+    description: "目标用户群体的特征"
+    
+  - name: "concepts"
+    enabled: true
+    required: false
+    description: "领域术语和概念定义"
+    
+  - name: "constraints"
+    enabled: true
+    required: false
+    description: "约束条件和规则"
+    
+  - name: "variables"
+    enabled: true
+    required: false
+    description: "变量和数据类型"
+    
+  - name: "worker"
+    enabled: true
+    required: true
+    description: "工作流程和处理步骤"
+
+# LLM配置
+llm:
+  provider: "openai"
+  model: "gpt-4o"
+  temperature: 0
+  max_tokens: 16000
+  timeout: 60
+
+# 嵌入模型配置
+embedding:
+  model: "paraphrase-multilingual-MiniLM-L12-v2"
+  device: "cpu"
+  cache_embeddings: true
+
+# 日志配置
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: null  # 可选：日志文件路径
