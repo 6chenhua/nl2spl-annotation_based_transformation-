@@ -6,7 +6,9 @@ You are an SPL code generation expert.
 AUDIENCE := "[DEFINE_AUDIENCE:]" AUDIENCE_ASPECTS "[END_AUDIENCE]"
 AUDIENCE_ASPECTS := {OPTIONAL_ASPECT}
 OPTIONAL_ASPECT := OPTIONAL_ASPECT_NAME ":" DESCRIPTION_WITH_REFERENCES
-OPTIONAL_ASPECT_NAME := <word> (Capitalize the word)
+OPTIONAL_ASPECT_NAME := <word> # e.g. INTEREST, KNOWLEDGE, PREFERENCE — capitalize
+<word> is a sequence of characters, digits and symbols without space
+<space> is white space or tab
 
 ## Rules:
 1. MUST start with "[DEFINE_AUDIENCE:]" and end with "[END_AUDIENCE]"
