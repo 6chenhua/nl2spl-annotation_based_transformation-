@@ -3,10 +3,13 @@
 将SPL技术标签映射到业务领域语言，以及反向映射。
 """
 
+import logging
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 
 from ..models import SPLBlockType
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -155,25 +158,72 @@ class LabelMapper:
         if include_other:
             options.append({
                 "id": len(options) + 1,
-                "text": "其他（请说明）",
-                "hint": "如果以上选项都不符合",
-                "block_type": None
+                "text": "其他（请选择最相近的）",
+                "hint": "选择最相近的选项，或跳过此冲突",
+                "block_type": None  # 用户选择此项时，会要求其重新选择
             })
         
         return options
     
-    def map_response_to_label(self, 
-                             response: str, 
-                             options: List[Dict]) -> Optional[SPLBlockType]:
+    def map_response_to_label(self,
+                              response: str,
+                              options: List[Dict]) -> Optional[SPLBlockType]:
         """将用户回答映射回SPL标签
-        
+
         Args:
-            response: 用户回答（选项ID或文本）
+            response: 用户回答（选项ID或文本，或OTHER:描述）
             options: 选项列表
-            
+
         Returns:
             对应的SPLBlockType，如果无法映射则返回None
         """
+        # 处理"其他"选项的自由输入
+        if response.startswith("OTHER:"):
+            custom_description = response[6:].strip().lower()  # 提取用户描述
+            logger.info(f"用户选择'其他'并描述: {custom_description}")
+
+            # 根据描述智能匹配到最接近的选项
+            # 关键词映射表
+            keyword_mappings = {
+                '角色': SPLBlockType.PERSONA,
+                '性格': SPLBlockType.PERSONA,
+                '定位': SPLBlockType.PERSONA,
+                '背景': SPLBlockType.PERSONA,
+                '专业': SPLBlockType.PERSONA,
+                '用户': SPLBlockType.AUDIENCE,
+                '受众': SPLBlockType.AUDIENCE,
+                '面向': SPLBlockType.AUDIENCE,
+                '客户': SPLBlockType.AUDIENCE,
+                '术语': SPLBlockType.CONCEPTS,
+                '概念': SPLBlockType.CONCEPTS,
+                '定义': SPLBlockType.CONCEPTS,
+                '名词': SPLBlockType.CONCEPTS,
+                '限制': SPLBlockType.CONSTRAINTS,
+                '约束': SPLBlockType.CONSTRAINTS,
+                '规则': SPLBlockType.CONSTRAINTS,
+                '必须': SPLBlockType.CONSTRAINTS,
+                '不能': SPLBlockType.CONSTRAINTS,
+                '遵守': SPLBlockType.CONSTRAINTS,
+                '变量': SPLBlockType.VARIABLES,
+                '输入': SPLBlockType.VARIABLES,
+                '输出': SPLBlockType.VARIABLES,
+                '数据': SPLBlockType.VARIABLES,
+                '流程': SPLBlockType.WORKER_MAIN_FLOW,
+                '步骤': SPLBlockType.WORKER_MAIN_FLOW,
+                '工作': SPLBlockType.WORKER_MAIN_FLOW,
+                '处理': SPLBlockType.WORKER_MAIN_FLOW,
+            }
+
+            # 尝试关键词匹配
+            for keyword, block_type in keyword_mappings.items():
+                if keyword in custom_description:
+                    logger.info(f"根据关键词'{keyword}'映射到: {block_type.value}")
+                    return block_type
+
+            # 如果没有匹配到关键词，返回None（由调用者处理）
+            logger.warning(f"无法根据描述'{custom_description}'映射到标签")
+            return None
+
         # 尝试解析为选项ID
         try:
             option_id = int(response.strip())
@@ -182,13 +232,13 @@ class LabelMapper:
                     return option.get("block_type")
         except ValueError:
             pass
-        
+
         # 尝试文本匹配
         response_lower = response.lower()
         for option in options:
             if option["text"].lower() in response_lower:
                 return option.get("block_type")
-        
+
         return None
     
     def get_all_mappings(self) -> Dict[SPLBlockType, LabelMapping]:

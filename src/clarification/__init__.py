@@ -6,5 +6,9 @@
 from .question_generator import QuestionGenerator
 from .clarification_ui import ClarificationUI, ConsoleUI
 from .label_mapper import LabelMapper
+from .intent_resolver import IntentResolver, ResolutionResult
 
-__all__ = ["QuestionGenerator", "ClarificationUI", "ConsoleUI", "LabelMapper"]
+__all__ = [
+    "QuestionGenerator", "ClarificationUI", "ConsoleUI", "LabelMapper",
+    "IntentResolver", "ResolutionResult"
+]

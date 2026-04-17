@@ -81,9 +81,15 @@ class BlockGenerator(ABC):
 - 确保标签正确闭合
 """
     
-    def _extract_code(self, response: dict) -> str:
+    def _extract_code(self, response) -> str:
         """从响应中提取代码"""
-        content = response.get("content", "")
+        # 处理不同格式的响应
+        if isinstance(response, dict):
+            content = response.get("content", "")
+        elif isinstance(response, str):
+            content = response
+        else:
+            content = str(response)
         
         # 尝试提取代码块
         import re

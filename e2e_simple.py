@@ -13,6 +13,7 @@ from openai import AsyncOpenAI
 from src.annotators.persona_annotator import PersonaAnnotator
 from src.annotators.audience_annotator import AudienceAnnotator
 from src.annotators.worker_annotator import WorkerAnnotator
+from src.config import OPENAI_API_KEY, OPENAI_BASE_URL
 
 
 async def test_annotators():
@@ -22,11 +23,16 @@ async def test_annotators():
     print("Simplified E2E Test: Testing Annotators")
     print("=" * 80)
     
-    # Initialize OpenAI client
-    client = AsyncOpenAI(
-        base_url='https://api.rcouyi.com/v1',
-        api_key="sk-V0s4xmnT70wbwPPe160dBaCc96A74fB9Ae850fFc6dE6136b"
+# Initialize OpenAI client
+if not OPENAI_API_KEY:
+    raise ValueError(
+        "OPENAI_API_KEY environment variable is not set. "
+        "Please set it in your .env file or environment."
     )
+client = AsyncOpenAI(
+    api_key=OPENAI_API_KEY,
+    base_url=OPENAI_BASE_URL or 'https://api.openai.com/v1'
+)
     
     # Test prompt
     test_prompt = """Create a text proofreading AI assistant.
