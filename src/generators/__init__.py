@@ -12,6 +12,7 @@ from .spl_block_generator import (
     ConstraintsGenerator,
     VariablesGenerator,
     WorkerGenerator,
+    TypesGenerator,
 )
 from .merger import SPLMerger
 
@@ -19,6 +20,7 @@ __all__ = [
     "BlockGenerator",
     "SPLPromptBuilder",
     "get_block_prompt",
+    "TypesGenerator",
     "PersonaGenerator",
     "AudienceGenerator",
     "ConceptsGenerator",

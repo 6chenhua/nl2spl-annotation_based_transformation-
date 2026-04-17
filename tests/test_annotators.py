@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, MagicMock
 
 from src.annotators import (
     PersonaAnnotator, AudienceAnnotator, ConceptsAnnotator,
-    ConstraintsAnnotator, VariablesAnnotator, WorkerAnnotator
+    ConstraintsAnnotator, WorkerAnnotator
 )
 from src.models import SPLBlockType
 

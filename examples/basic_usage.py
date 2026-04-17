@@ -15,19 +15,21 @@ from src.clarification.clarification_ui import ProgrammaticUI
 
 async def main():
     """基本使用示例"""
-    
-    # 初始化OpenAI客户端（使用提供的API凭证）
-    client = AsyncOpenAI(
-        base_url='https://api.rcouyi.com/v1',
-        api_key="sk-V0s4xmnT70wbwPPe160dBaCc96A74fB9Ae850fFc6dE6136b"
-    )
-    
-    # 包装客户端
-    llm_client = LLMClientAdapter(client, model="gpt-4o")
-    
+
+    # 配置输出
+    config = {
+        'output': {
+            'enabled': True,
+            'base_dir': 'output',
+            'case_name': 'text_proofreading_example',  # 指定案例名称
+            'save_intermediate': True,
+            'pretty_print': True
+        }
+    }
+
     # 创建Pipeline
     ui = ProgrammaticUI()  # 使用程序化UI（自动处理冲突）
-    pipeline = Pipeline(llm_client=llm_client, ui=ui)
+    pipeline = Pipeline(ui=ui, config=config)
     
     # 示例prompt
     prompt = """

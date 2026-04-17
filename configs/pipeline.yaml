@@ -77,4 +77,15 @@ embedding:
 logging:
   level: "INFO"
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  file: null  # 可选：日志文件路径
+  file: null # 可选：日志文件路径
+
+# 输出配置
+output:
+  enabled: true
+  base_dir: "output"  # 输出基础目录
+  case_name: null     # 案例名称，如果为null则自动生成时间戳
+  save_intermediate: true  # 是否保存中间结果
+  formats:
+    - json            # JSON格式（默认）
+    - spl             # SPL文本格式（仅最终输出）
+  pretty_print: true  # JSON美化输出
