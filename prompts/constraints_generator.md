@@ -4,7 +4,24 @@ You are an SPL code generation expert.
 
 ## EBNF Grammar (STRICTLY FOLLOW THIS)
 CONSTRAINTS := "[DEFINE_CONSTRAINTS:]" {CONSTRAINT} "[END_CONSTRAINTS]"
-CONSTRAINT := [OPTIONAL_ASPECT_NAME ":"] DESCRIPTION_WITH_REFERENCES
+CONSTRAINT   := [OPTIONAL_ASPECT_NAME ":"] DESCRIPTION_WITH_REFERENCES
+ 
+OPTIONAL_ASPECT_NAME := <word>
+  - Capitalize; derive from requirement topic in CamelCase (e.g. ToolNaming, ApiKeyStorage).
+  - One aspect may have multiple CONSTRAINT lines under the same name.
+  - Omit only when the requirement has no stable, referenceable identity.
+ 
+DESCRIPTION_WITH_REFERENCES := STATIC_DESCRIPTION {DESCRIPTION_WITH_REFERENCES}
+                              | REFERENCE {DESCRIPTION_WITH_REFERENCES}
+STATIC_DESCRIPTION := <word> | <word> <space> STATIC_DESCRIPTION
+REFERENCE := "<REF>" ["*"] NAME "</REF>"
+NAME := SIMPLE_NAME | QUALIFIED_NAME | ARRAY_ACCESS | DICT_ACCESS
+SIMPLE_NAME    := <word>
+QUALIFIED_NAME := NAME "." SIMPLE_NAME
+ARRAY_ACCESS   := NAME "[" [<number>] "]"
+DICT_ACCESS    := NAME "[" SIMPLE_NAME "]"
+<word> is a sequence of characters, digits and symbols without space
+<space> is white space or tab
 
 ## Rules:
 1. MUST start with "[DEFINE_CONSTRAINTS:]" and end with "[END_CONSTRAINTS]"
