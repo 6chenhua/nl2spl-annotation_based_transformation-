@@ -61,6 +61,8 @@ WORKER_INSTRUCTION := "[DEFINE_WORKER:" ["\"" STATIC_DESCRIPTION "\""] WORKER_NA
 WORKER_NAME := <word>
 INSTRUCTION_NAME := WORKER_NAME | GUARDRAIL_NAME
 
+
+
 """
 An input or output is required by default if there is no REQUIRED or OPTIONAL annotation.
 A worker may use several outputs to achieve the effect of Python Union, for example, one output variable returns the correct response object, and the other returns an error message.
