@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 from openai import AsyncOpenAI
 from annotated_nl2spl.src.pipeline import Pipeline
 from annotated_nl2spl.src.clarification.clarification_ui import ProgrammaticUI
+from annotated_nl2spl.src.config import OPENAI_API_KEY, OPENAI_BASE_URL
 
 
 async def test_e2e():
@@ -19,11 +20,16 @@ async def test_e2e():
     print("端到端测试 - Annotated NL2SPL Pipeline")
     print("=" * 80)
     
-    # 初始化LLM客户端
-    llm_client = AsyncOpenAI(
-        base_url='https://api.rcouyi.com/v1',
-        api_key="sk-V0s4xmnT70wbwPPe160dBaCc96A74fB9Ae850fFc6dE6136b"
+# 初始化LLM客户端
+if not OPENAI_API_KEY:
+    raise ValueError(
+        "OPENAI_API_KEY environment variable is not set. "
+        "Please set it in your .env file or environment."
     )
+llm_client = AsyncOpenAI(
+    api_key=OPENAI_API_KEY,
+    base_url=OPENAI_BASE_URL or 'https://api.openai.com/v1'
+)
     
     # 创建Pipeline
     ui = ProgrammaticUI()

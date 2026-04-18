@@ -13,6 +13,7 @@ from openai import AsyncOpenAI
 from src.pipeline import Pipeline
 from src.clarification.clarification_ui import ProgrammaticUI
 from src.llm_adapter import LLMClientAdapter
+from src.config import OPENAI_API_KEY, OPENAI_BASE_URL
 
 
 async def main():
@@ -20,11 +21,16 @@ async def main():
     print("Annotated NL2SPL Pipeline - Full Test")
     print("=" * 80)
     
-    # 初始化客户端
-    client = AsyncOpenAI(
-        base_url='https://api.rcouyi.com/v1',
-        api_key="sk-V0s4xmnT70wbwPPe160dBaCc96A74fB9Ae850fFc6dE6136b"
+# 初始化客户端
+if not OPENAI_API_KEY:
+    raise ValueError(
+        "OPENAI_API_KEY environment variable is not set. "
+        "Please set it in your .env file or environment."
     )
+client = AsyncOpenAI(
+    api_key=OPENAI_API_KEY,
+    base_url=OPENAI_BASE_URL or 'https://api.openai.com/v1'
+)
     
     # 包装客户端
     llm_client = LLMClientAdapter(client, model="gpt-4o")

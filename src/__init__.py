@@ -5,6 +5,7 @@
 
 from .pipeline import Pipeline
 from .models import PipelineResult, Annotation, Conflict
+from .output_manager import OutputManager
 
 __version__ = "0.1.0"
-__all__ = ["Pipeline", "PipelineResult", "Annotation", "Conflict"]
+__all__ = ["Pipeline", "PipelineResult", "Annotation", "Conflict", "OutputManager"]

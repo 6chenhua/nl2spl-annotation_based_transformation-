@@ -5,35 +5,45 @@
 """
 
 import logging
+import os
 from typing import List, Dict, Tuple, Optional
 import numpy as np
 
 from ..models import TextSegment
+from ..config import OPENAI_API_KEY, OPENAI_BASE_URL
 
 logger = logging.getLogger(__name__)
 
 
 class SemanticMatcher:
     """语义匹配器
-    
+
     使用 OpenAI Embedding API 计算文本片段之间的语义相似度。
     """
-    
-    def __init__(self, 
+
+    def __init__(self,
                  api_key: Optional[str] = None,
                  base_url: str = "https://api.openai.com/v1",
                  model: str = "text-embedding-3-large",
                  cache_embeddings: bool = True):
         """初始化语义匹配器
-        
+
         Args:
             api_key: OpenAI API密钥（可选，默认从环境变量读取）
             base_url: API基础URL
             model: 嵌入模型名称
             cache_embeddings: 是否缓存嵌入向量
         """
-        self.api_key = api_key or "sk-V0s4xmnT70wbwPPe160dBaCc96A74fB9Ae850fFc6dE6136b"
-        self.base_url = base_url or "https://api.rcouyi.com/v1"
+        # 优先使用传入的参数，其次从环境变量读取
+        self.api_key = api_key or OPENAI_API_KEY
+        self.base_url = base_url or OPENAI_BASE_URL or "https://api.openai.com/v1"
+        
+        if not self.api_key:
+            raise ValueError(
+                "API key is required. Please set OPENAI_API_KEY in your .env file "
+                "or pass it to the constructor."
+            )
+        
         self.model = model
         self.cache_embeddings = cache_embeddings
         self._client = None
@@ -235,12 +245,14 @@ class SemanticMatcher:
         logger.info("Embedding cache cleared")
 
 
-def create_matcher(api_key: Optional[str] = None, 
+def create_matcher(api_key: Optional[str] = None,
                    base_url: Optional[str] = None,
                    model: str = "text-embedding-3-large") -> SemanticMatcher:
     """工厂函数，创建语义匹配器"""
+    # 使用默认的 base_url 如果未提供
+    actual_base_url = base_url or OPENAI_BASE_URL or "https://api.openai.com/v1"
     return SemanticMatcher(
         api_key=api_key,
-        base_url=base_url,
+        base_url=actual_base_url,
         model=model
     )

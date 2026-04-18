@@ -48,6 +48,7 @@ class SPLPromptBuilder:
         """获取指定块的system prompt"""
 
         prompt_files = {
+            SPLBlockType.TYPES: 'types_generator.md',
             SPLBlockType.PERSONA: 'persona_generator.md',
             SPLBlockType.AUDIENCE: 'audience_generator.md',
             SPLBlockType.CONCEPTS: 'concepts_generator.md',

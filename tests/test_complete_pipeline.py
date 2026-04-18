@@ -16,6 +16,7 @@ from openai import AsyncOpenAI
 from src.pipeline import Pipeline
 from src.clarification.clarification_ui import ProgrammaticUI
 from src.llm_adapter import LLMClientAdapter
+from src.config import OPENAI_API_KEY, OPENAI_BASE_URL
 
 
 async def test_complete_pipeline():
@@ -27,11 +28,16 @@ async def test_complete_pipeline():
     print(f"Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 80)
     
-    # Initialize OpenAI client with provided credentials
-    client = AsyncOpenAI(
-        base_url='https://api.rcouyi.com/v1',
-        api_key="sk-V0s4xmnT70wbwPPe160dBaCc96A74fB9Ae850fFc6dE6136b"
+# Initialize OpenAI client with provided credentials
+if not OPENAI_API_KEY:
+    raise ValueError(
+        "OPENAI_API_KEY environment variable is not set. "
+        "Please set it in your .env file or environment."
     )
+client = AsyncOpenAI(
+    api_key=OPENAI_API_KEY,
+    base_url=OPENAI_BASE_URL or 'https://api.openai.com/v1'
+)
     
     # Test prompt - Customer Service AI Assistant
     test_prompt = """Create an intelligent customer service AI assistant.
