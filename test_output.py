@@ -70,13 +70,13 @@ def test_output_manager():
             description="分析结果类型"
         )
     ]
-    manager.save_phase2_extraction(typed_vars, complex_types, "测试输入")
+    manager.save_phase4_extraction(typed_vars, complex_types, "测试输入")
     print("[OK] Phase 2 结果已保存")
 
     # 4. 测试 Phase 3: TYPES生成
     print("\n[4/8] 测试 Phase 3 - TYPES生成结果保存...")
     types_block = "[TYPES]\nAnalysisResult = Structured { score: number; summary: text; }\n[/TYPES]"
-    manager.save_phase3_types(types_block, "测试输入")
+    manager.save_phase5_types(types_block, "测试输入")
     print("[OK] Phase 3 结果已保存")
 
     # 5. 测试 Phase 4: 冲突检测
@@ -89,7 +89,7 @@ def test_output_manager():
         )
     ]
     clean_annotations = {k: v for k, v in annotations.items()}
-    manager.save_phase4_conflicts(conflicts, clean_annotations, "测试输入")
+    manager.save_phase2_conflicts(conflicts, clean_annotations, "测试输入")
     print("[OK] Phase 4 结果已保存")
 
     # 6. 测试 Phase 5: 澄清历史
@@ -105,7 +105,7 @@ def test_output_manager():
             "success": True
         }
     ]
-    manager.save_phase5_clarification(clarification_history, clean_annotations, "测试输入")
+    manager.save_phase3_clarification(clarification_history, clean_annotations, "测试输入")
     print("[OK] Phase 5 结果已保存")
 
     # 7. 测试 Phase 6: SPL块生成

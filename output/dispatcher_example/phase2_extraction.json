@@ -4,12 +4,12 @@
   "typed_variables": [
     {
       "name": "process",
-      "type_name": "List [text]",
+      "type_name": "List [number]",
       "is_simple_type": false,
       "needs_type_definition": false,
       "original_info": {
         "name": "process",
-        "context": "当前流程作为智能体调度判断的重要依据",
+        "context": "Represents the current workflow stage; used to determine which sub-agent to invoke based on its value, such as stages like '稿件大纲创作中', '稿件脚本创作中', '稿件修改中', etc.",
         "source": "REFERENCE",
         "confidence": 0.85
       },
@@ -17,12 +17,12 @@
     },
     {
       "name": "manuscript_link",
-      "type_name": "text | null",
+      "type_name": "Optional[text]",
       "is_simple_type": false,
       "needs_type_definition": false,
       "original_info": {
         "name": "manuscript_link",
-        "context": "用于判断图文修改/反馈流程是否触发（manuscript_link ≠ none）",
+        "context": "Represents the existence of a manuscript link; its presence (not none) is used with type to determine whether to assign the 图文修改/反馈 agent.",
         "source": "REFERENCE",
         "confidence": 0.85
       },
@@ -30,25 +30,25 @@
     },
     {
       "name": "type",
-      "type_name": "Type",
+      "type_name": "Enum_type",
       "is_simple_type": false,
       "needs_type_definition": true,
       "original_info": {
         "name": "type",
-        "context": "用于区分图文和视频流程，配合manuscript_link和preview_link判断流程类型（type = 图文 或 type = 视频）",
+        "context": "Indicates the content type (图文 or 视频); used in conditional logic (e.g., type == 图文, type == 视频) to filter which agent can be selected.",
         "source": "REFERENCE",
         "confidence": 0.85
       },
-      "confidence": 0.98
+      "confidence": 0.75
     },
     {
       "name": "preview_link",
-      "type_name": "text | null",
+      "type_name": "Optional[text]",
       "is_simple_type": false,
       "needs_type_definition": false,
       "original_info": {
         "name": "preview_link",
-        "context": "用于判断视频修改/反馈流程是否触发（preview_link ≠ none）",
+        "context": "Represents the existence of a video preview link; its presence (not none) is used with type to determine whether to assign the 视频修改/反馈 agent.",
         "source": "REFERENCE",
         "confidence": 0.85
       },
@@ -57,10 +57,10 @@
   ],
   "complex_types": [
     {
-      "name": "Type",
-      "category": "declared",
-      "definition": "{\n    \"数据\" data: text,\n    \"元数据\" metadata: text\n}",
-      "description": "type custom type",
+      "name": "TypeEnum",
+      "category": "enum",
+      "definition": "[selected]",
+      "description": "type enumeration type",
       "referenced_by": [
         "type"
       ]

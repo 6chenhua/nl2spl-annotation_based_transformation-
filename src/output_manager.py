@@ -180,13 +180,13 @@ class OutputManager:
         logger.info(f"Phase 1 annotations saved to {filepath}")
         return filepath
 
-    def save_phase2_extraction(
+    def save_phase4_extraction(
         self,
         typed_vars: List[TypedVariable],
         complex_types: List[ComplexTypeDef],
         original_prompt: str
     ) -> Optional[Path]:
-        """保存Phase 2: 变量提取与类型推断结果
+        """保存Phase 4: 变量提取与类型推断结果
 
         Args:
             typed_vars: 带类型的变量列表
@@ -200,7 +200,7 @@ class OutputManager:
             return None
 
         data = {
-            "phase": "phase2_extraction",
+            "phase": "phase4_extraction",
             "original_prompt": original_prompt,
             "typed_variables": typed_vars,
             "complex_types": complex_types,
@@ -210,17 +210,17 @@ class OutputManager:
             }
         }
 
-        filepath = self._save_json("phase2_extraction.json", data)
-        self.metadata["phases_completed"].append("phase2")
-        logger.info(f"Phase 2 extraction saved to {filepath}")
+        filepath = self._save_json("phase4_extraction.json", data)
+        self.metadata["phases_completed"].append("phase4")
+        logger.info(f"Phase 4 extraction saved to {filepath}")
         return filepath
 
-    def save_phase3_types(
+    def save_phase5_types(
         self,
         types_block: str,
         original_prompt: str
     ) -> Optional[Path]:
-        """保存Phase 3: TYPES生成结果
+        """保存Phase 5: TYPES生成结果
 
         Args:
             types_block: TYPES块代码
@@ -233,7 +233,7 @@ class OutputManager:
             return None
 
         data = {
-            "phase": "phase3_types_generation",
+            "phase": "phase5_types_generation",
             "original_prompt": original_prompt,
             "types_block": types_block,
             "stats": {
@@ -242,18 +242,18 @@ class OutputManager:
             }
         }
 
-        filepath = self._save_json("phase3_types.json", data)
-        self.metadata["phases_completed"].append("phase3")
-        logger.info(f"Phase 3 types saved to {filepath}")
+        filepath = self._save_json("phase5_types.json", data)
+        self.metadata["phases_completed"].append("phase5")
+        logger.info(f"Phase 5 types saved to {filepath}")
         return filepath
 
-    def save_phase4_conflicts(
+    def save_phase2_conflicts(
         self,
         conflicts: List[Conflict],
         clean_annotations: Dict[SPLBlockType, Annotation],
         original_prompt: str
     ) -> Optional[Path]:
-        """保存Phase 4: 冲突检测结果
+        """保存Phase 2: 冲突检测结果
 
         Args:
             conflicts: 冲突列表
@@ -267,7 +267,7 @@ class OutputManager:
             return None
 
         data = {
-            "phase": "phase4_conflict_detection",
+            "phase": "phase2_conflict_detection",
             "original_prompt": original_prompt,
             "conflicts": conflicts,
             "clean_annotations": {
@@ -280,18 +280,18 @@ class OutputManager:
             }
         }
 
-        filepath = self._save_json("phase4_conflicts.json", data)
-        self.metadata["phases_completed"].append("phase4")
-        logger.info(f"Phase 4 conflicts saved to {filepath}")
+        filepath = self._save_json("phase2_conflicts.json", data)
+        self.metadata["phases_completed"].append("phase2")
+        logger.info(f"Phase 2 conflicts saved to {filepath}")
         return filepath
 
-    def save_phase5_clarification(
+    def save_phase3_clarification(
         self,
         clarification_history: List[Dict[str, Any]],
         final_annotations: Dict[SPLBlockType, Annotation],
         original_prompt: str
     ) -> Optional[Path]:
-        """保存Phase 5: 澄清历史
+        """保存Phase 3: 澄清历史
 
         Args:
             clarification_history: 澄清历史记录
@@ -305,7 +305,7 @@ class OutputManager:
             return None
 
         data = {
-            "phase": "phase5_clarification",
+            "phase": "phase3_clarification",
             "original_prompt": original_prompt,
             "clarification_history": clarification_history,
             "final_annotations": {
@@ -318,9 +318,9 @@ class OutputManager:
             }
         }
 
-        filepath = self._save_json("phase5_clarification.json", data)
-        self.metadata["phases_completed"].append("phase5")
-        logger.info(f"Phase 5 clarification saved to {filepath}")
+        filepath = self._save_json("phase3_clarification.json", data)
+        self.metadata["phases_completed"].append("phase3")
+        logger.info(f"Phase 3 clarification saved to {filepath}")
         return filepath
 
     def save_phase6_spl_blocks(

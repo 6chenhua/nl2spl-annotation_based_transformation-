@@ -145,36 +145,36 @@ class Pipeline:
             self.output_manager.save_phase1_annotations(annotations, prompt)
 
         # Phase 2: 冲突检测
-        conflicts, clean_annotations = await self._phase4_conflict_detection(annotations)
+        conflicts, clean_annotations = await self._phase2_conflict_detection(annotations)
 
         # 保存 Phase 2 结果
         if self.output_manager:
-            self.output_manager.save_phase4_conflicts(conflicts, clean_annotations, prompt)
+            self.output_manager.save_phase2_conflicts(conflicts, clean_annotations, prompt)
 
         # Phase 3: 人机交互澄清（关键：必须先澄清再提取变量！）
-        final_annotations, clarification_history = await self._phase5_clarification(
+        final_annotations, clarification_history = await self._phase3_clarification(
             conflicts, clean_annotations, prompt
         )
 
         # 保存 Phase 3 结果
         if self.output_manager:
-            self.output_manager.save_phase5_clarification(clarification_history, final_annotations, prompt)
+            self.output_manager.save_phase3_clarification(clarification_history, final_annotations, prompt)
 
         # Phase 4: 从澄清后的WORKER标注提取变量（修正：在澄清后提取！）
-        typed_vars, complex_types = await self._phase2_extraction(
+        typed_vars, complex_types = await self._phase4_extraction(
             final_annotations[SPLBlockType.WORKER_MAIN_FLOW]
         )
 
         # 保存 Phase 4 结果
         if self.output_manager:
-            self.output_manager.save_phase2_extraction(typed_vars, complex_types, prompt)
+            self.output_manager.save_phase4_extraction(typed_vars, complex_types, prompt)
 
         # Phase 5: TYPES生成
-        types_block = await self._phase3_types_generation(complex_types)
+        types_block = await self._phase5_types_generation(complex_types)
 
         # 保存 Phase 5 结果
         if self.output_manager:
-            self.output_manager.save_phase3_types(types_block, prompt)
+            self.output_manager.save_phase5_types(types_block, prompt)
 
         # Phase 6: 并行生成所有SPL块（使用澄清后的标注和变量）
         spl_blocks = await self._phase6_generation(
@@ -236,9 +236,9 @@ class Pipeline:
 
         return annotations
 
-    async def _phase2_extraction(self, worker_annotation: Annotation) -> Tuple[List[TypedVariable], List[ComplexTypeDef]]:
-        """Phase 2: 变量提取与类型推断（新增）"""
-        logger.info("Phase 2: Variable extraction and type inference")
+    async def _phase4_extraction(self, worker_annotation: Annotation) -> Tuple[List[TypedVariable], List[ComplexTypeDef]]:
+        """Phase 4: 变量提取与类型推断（新增）"""
+        logger.info("Phase 4: Variable extraction and type inference")
 
         if not worker_annotation or not worker_annotation.extracted_content:
             logger.warning("Empty Worker annotation, skipping extraction")
@@ -258,9 +258,9 @@ class Pipeline:
 
         return typed_vars, complex_types
 
-    async def _phase3_types_generation(self, complex_types: List[ComplexTypeDef]) -> str:
-        """Phase 3: TYPES生成（必须先执行）"""
-        logger.info("Phase 3: TYPES generation (priority)")
+    async def _phase5_types_generation(self, complex_types: List[ComplexTypeDef]) -> str:
+        """Phase 5: TYPES生成（必须先执行）"""
+        logger.info("Phase 5: TYPES generation (priority)")
 
         if not complex_types:
             logger.info("No complex types to generate, returning empty TYPES")
@@ -272,21 +272,21 @@ class Pipeline:
         logger.info(f"Generated TYPES block: {len(types_block)} chars")
         return types_block
 
-    async def _phase4_conflict_detection(self, annotations: Dict[SPLBlockType, Annotation]) -> tuple:
+    async def _phase2_conflict_detection(self, annotations: Dict[SPLBlockType, Annotation]) -> tuple:
         """Phase 4: 冲突检测"""
-        logger.info("Phase 4: Conflict detection")
+        logger.info("Phase 2: Conflict detection")
 
         conflicts, clean_annotations = self.conflict_detector.detect_conflicts(annotations)
         logger.info(f"Found {len(conflicts)} conflicts")
 
         return conflicts, clean_annotations
 
-    async def _phase5_clarification(self,
-                                     conflicts: List[Conflict],
-                                     clean_annotations: Dict[SPLBlockType, Annotation],
-                                     original_prompt: str) -> tuple:
+    async def _phase3_clarification(self,
+                                    conflicts: List[Conflict],
+                                    clean_annotations: Dict[SPLBlockType, Annotation],
+                                    original_prompt: str) -> tuple:
         """Phase 5: 人机交互澄清"""
-        logger.info("Phase 5: Clarification")
+        logger.info("Phase 3: Clarification")
 
         clarification_history = []
 

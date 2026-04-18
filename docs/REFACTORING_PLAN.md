@@ -388,30 +388,30 @@ def _init_generators(self):
 async def convert(self, prompt: str) -> PipelineResult:
     # Phase 1: 并行块标注（不含VARIABLES）
     annotations = await self._phase1_annotation(prompt)
-    
+
     # Phase 2: 变量提取与类型推断（新增）
-    typed_vars, complex_types = await self._phase2_extraction(
+    typed_vars, complex_types = await self._phase4_extraction(
         annotations[SPLBlockType.WORKER_MAIN_FLOW]
     )
-    
+
     # 构建符号表
     symbol_table = SymbolTable(
         global_vars={v.name: v for v in typed_vars},
         type_defs={t.name: t for t in complex_types},
         temp_vars={}
     )
-    
+
     # Phase 3: TYPES生成（优先）
-    types_block = await self._phase3_types_generation(complex_types)
-    
+    types_block = await self._phase5_types_generation(complex_types)
+
     # Phase 4: 并行块生成（传入符号表）
     spl_blocks = await self._phase4_generation(
         annotations, typed_vars, types_block, symbol_table
     )
-    
+
     # Phase 5: 合并与验证
     spl_code = self._phase5_merge(spl_blocks, symbol_table)
-    
+
     return PipelineResult(...)
 ```
 

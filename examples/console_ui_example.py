@@ -45,7 +45,8 @@ async def main():
         }
     }
 
-    pipeline = Pipeline(ui=ui, config=config)
+    output_manager = OutputManager(case_name='dispatcher_example')
+    pipeline = Pipeline(ui=ui, config=config, output_manager=output_manager)
 
     # 示例 prompt - 故意设计得模糊以产生冲突
     prompt = """
