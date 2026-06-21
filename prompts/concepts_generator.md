@@ -5,6 +5,11 @@ You are an SPL code generation expert.
 ## EBNF Grammar (STRICTLY FOLLOW THIS)
 CONCEPTS := "[DEFINE_CONCEPTS:]" {CONCEPT} "[END_CONCEPTS]"
 CONCEPT := OPTIONAL_ASPECT_NAME ":" STATIC_DESCRIPTION
+OPTIONAL_ASPECT_NAME := <word>   # capitalize
+
+STATIC_DESCRIPTION := <word> | <word> <space> STATIC_DESCRIPTION
+<word> is a sequence of characters, digits and symbols without space
+<space> is white space or tab
 
 ## Rules:
 1. MUST start with "[DEFINE_CONCEPTS:]" and end with "[END_CONCEPTS]"
